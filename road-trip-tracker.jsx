@@ -1,0 +1,607 @@
+import { useState, useEffect } from "react";
+
+const LEGS = [
+  {
+    id: "leg1",
+    num: 1,
+    title: "Mena → Hochatown, OK",
+    meta: "1hr 43min · 87 mi · Ouachita Mountains",
+    routeUrl:
+      "https://www.google.com/maps/dir/315+Polk+County+Rd+684,+Mena,+AR+71953/TJ's+Country+Store,+101+E+Hornbeck+Ave,+Hatfield,+AR/Spillway+Overlook,+Broken+Bow,+OK/Hochatown+Distilling+Company,+41+N+Lukfata+Trl+Rd,+Broken+Bow,+OK/Janet's+Treasure+Chest,+Broken+Bow,+OK/The+Forest+Store+Hochatown,+6427+N+US+Hwy+259,+Broken+Bow,+OK/Loblolly+Chocolates,+6427+N+US+Hwy+259,+Broken+Bow,+OK/Hochatime,+9231+US-259,+Hochatown,+OK",
+    stops: [
+      {
+        id: "tjs",
+        name: "T.J.'s Country Store",
+        tag: "FOOD",
+        tagColor: "food",
+        emoji: "🥧",
+        desc: "Mom-and-pop gem in Hatfield. Famous homemade pies & breakfast. Right on US-59.",
+        hours: "M-F 5AM-10PM, Sa-Su 6AM-10PM",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJcfaR6Gcqy4cRQ-MWoaEZU58",
+      },
+      {
+        id: "cossatot",
+        name: "Cossatot Falls",
+        tag: "DETOUR 25min",
+        tagColor: "nature",
+        emoji: "⭐",
+        desc: '"Skull Crusher" river canyon. Easy 0.9mi hike, 30 min round trip. Gravel roads off AR-4/Hwy 278.',
+        hours: "Open 24 hours",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJyTNkbd_RNIYRYxr9hfGTwqg",
+      },
+      {
+        id: "spillway",
+        name: "Spillway Overlook",
+        tag: "SCENIC",
+        tagColor: "scenic",
+        emoji: "📷",
+        desc: "Broken Bow Lake dam. Crystal-clear water, pine mountains. 5 min photo stop.",
+        hours: "Open 24 hours",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJvYO-JMo4NYYRMTQMmzUVAKs",
+      },
+      {
+        id: "distillery",
+        name: "Hochatown Distilling Co",
+        tag: "🥃 HIM",
+        tagColor: "him",
+        emoji: "🥃",
+        desc: "4.9★ bourbon distillery with hidden speakeasy. Ask for Rod. Book ahead!",
+        hours: "M-Th 10-6, F-Sa 10-7, Su 10-5",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJ99d5UBxHNYYRCs-KcQiRH5E",
+      },
+      {
+        id: "janets",
+        name: "Janet's Treasure Chest",
+        tag: "🧲 OK MAGNET",
+        tagColor: "magnet",
+        emoji: "🧲",
+        desc: "Reviews mention beautiful magnets & handmade crafts. Eclectic souvenirs.",
+        hours: "Daily 9AM-5PM",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJ7-XSU7hANYYRxeW0jb-_B4A",
+      },
+      {
+        id: "forest",
+        name: "The Forest Store",
+        tag: "🎁 HER",
+        tagColor: "her",
+        emoji: "🌲",
+        desc: "4.9★ upscale nature goods. Candles, art, crochet kits, live-edge wood. ⚠️ Closed Tuesdays.",
+        hours: "Check — varies by day",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJpyTbr49BNYYRasOcNfgqhsA",
+      },
+      {
+        id: "loblolly",
+        name: "Loblolly Chocolates",
+        tag: "🍫 BOTH",
+        tagColor: "both",
+        emoji: "🍫",
+        desc: "4.9★ handmade artisan chocolates. Wild truffle flavors. Next to Forest Store in HochaBow complex.",
+        hours: "Daily 10AM-9PM (F-Su 9AM)",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJpU_iXC1HNYYRLQVYmwSQEMg",
+      },
+      {
+        id: "hochatime",
+        name: "Hochatime",
+        tag: "👕 OK BRAND",
+        tagColor: "brand",
+        emoji: "👕",
+        desc: "Oklahoma lifestyle brand. Locally designed tees, hoodies, hats. Premium quality, $2 stickers.",
+        hours: "Daily 9AM-5PM",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJjebrwqxHNYYR50N1tpROu9A",
+      },
+    ],
+  },
+  {
+    id: "leg2",
+    num: 2,
+    title: "Hochatown → Jefferson, TX",
+    meta: "1hr 58min · 111 mi · East TX piney woods & bayou",
+    routeUrl:
+      "https://www.google.com/maps/dir/Hochatime,+9231+US-259,+Hochatown,+OK/Olde+1852+Market+Company,+124+S+Main+St,+Linden,+TX/Lonesome+Dove+Drive+Thru+Safari,+1782+US-59,+Jefferson,+TX/Jefferson+General+Store,+113+E+Austin+St,+Jefferson,+TX/Texas+Treasures,+214+N+Polk+St,+Jefferson,+TX/Made+in+the+Shade+Boutique,+118+E+Henderson+St,+Jefferson,+TX/Foodie+Tasting+Room,+114+W+Lafayette+St,+Jefferson,+TX/Auntie+Skinner's+Riverboat+Club,+107+W+Austin+St,+Jefferson,+TX/Caddo+Lake+State+Park,+245+Park+Rd+2,+Karnack,+TX",
+    stops: [
+      {
+        id: "olde1852",
+        name: "Olde 1852 Market Co",
+        tag: "🎁 HER",
+        tagColor: "her",
+        emoji: "🎁",
+        desc: "5.0★ charming gift shop in Linden. Local artisan goods. Owner JoAnn is lovely.",
+        hours: "M-F 9-5, Sa 10-2, Su closed",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJbQ5S4Q4rNIYROVijJ0JL1Uk",
+      },
+      {
+        id: "safari",
+        name: "Lonesome Dove Safari",
+        tag: "🐃 BOTH",
+        tagColor: "both",
+        emoji: "🦓",
+        desc: "Drive-through exotic safari — zebras, camels, buffalo, ostriches. 45-60 min.",
+        hours: "Daily 10:30AM-4:30PM",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJsVcfNUmJNoYR2LQNei-17WQ",
+      },
+      {
+        id: "generalstore",
+        name: "Jefferson General Store",
+        tag: "⭐ BOTH",
+        tagColor: "both",
+        emoji: "🍺",
+        desc: "4.8★, 1,800+ reviews. Root beer floats, vintage candy, gifts. THE Jefferson landmark.",
+        hours: "M-Th 9-6, F-Sa 9-10, Su 9-6",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJibet2xKJNoYRL61Z_01wNeU",
+      },
+      {
+        id: "txtreasures",
+        name: "Texas Treasures",
+        tag: "🧲 TX MAGNET",
+        tagColor: "magnet",
+        emoji: "🧲",
+        desc: "Texas-themed trinkets, jewelry, collectibles. Her Texas fridge magnet stop!",
+        hours: "Daily 10AM-5PM",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJwXSIkxKJNoYR9fKI11NXVB4",
+      },
+      {
+        id: "ggs",
+        name: "GG's Antiques",
+        tag: "🎁 HER",
+        tagColor: "her",
+        emoji: "🏺",
+        desc: "5.0★ in old nursing home. Local artisan crafts, ceramics, vintage. ⚠️ Closed Sundays.",
+        hours: "M-Sa 10-5, Su closed",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJAQBEjBKJNoYReRaIDU3iJpI",
+      },
+      {
+        id: "madeintheshade",
+        name: "Made in the Shade",
+        tag: "🎁 HER",
+        tagColor: "her",
+        emoji: "🐱",
+        desc: "4.8★ handmade decor, jewelry, six cats roaming, gem mining ($10+).",
+        hours: "M-Sa 10-5, Su 11-4",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJdTigGBOJNoYRm10zJS7hz2k",
+      },
+      {
+        id: "yesteryear",
+        name: "Yesteryear Gift Shop",
+        tag: "🎁 HER",
+        tagColor: "her",
+        emoji: "🎄",
+        desc: "40+ years in business. Multiple themed rooms. Jewelry, decor, Christmas year-round.",
+        hours: "W-F 10-5, Sa 10-6, Su 11-4, Tu 12-5, M closed",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJtbSU2hKJNoYR5AZ2Ry7M37A",
+      },
+      {
+        id: "foodie",
+        name: "Foodie Tasting Room",
+        tag: "🎁 PARENTS",
+        tagColor: "gift",
+        emoji: "🫒",
+        desc: "Artisan balsamic, olive oils, jams, coffee. Gift basket for Benton. ⚠️ Closed Mon-Tue.",
+        hours: "W-Sa 10-5, Su 10-3",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJBS6RUBuJNoYRZ_tEjcc0AAA",
+      },
+      {
+        id: "skinners",
+        name: "Auntie Skinner's",
+        tag: "🍺 HIM",
+        tagColor: "him",
+        emoji: "🍻",
+        desc: "Historic bar & grill. Full bar, good food, live music. ⚠️ CLOSED TUESDAYS.",
+        hours: "Varies — closed Tue",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJEQS72hKJNoYRqqx9OF5z9gY",
+      },
+      {
+        id: "caddo",
+        name: "Caddo Lake State Park",
+        tag: "DETOUR 15min",
+        tagColor: "nature",
+        emoji: "⭐",
+        desc: "Surreal bald cypress bayou. Spanish moss, mirror water. Boardwalk or canoe ($20). $4/person.",
+        hours: "Daily 6AM-10PM",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJ4RDHJA-TNoYR-0ucS97gGkw",
+      },
+    ],
+  },
+  {
+    id: "leg3",
+    num: 3,
+    title: "Jefferson → Benton, LA",
+    meta: "1hr 13min · 60 mi · Piney woods to home",
+    routeUrl:
+      "https://www.google.com/maps/dir/Jefferson,+TX+75657/The+Seventh+Tap+Eastbank,+525+Barksdale+Blvd,+Bossier+City,+LA/127+Oak+Leaf+TR,+Benton,+LA+71006",
+    stops: [
+      {
+        id: "seventhtap",
+        name: "The Seventh Tap Eastbank",
+        tag: "🍺 HIM",
+        tagColor: "him",
+        emoji: "🍺",
+        desc: "4.8★ — Amazing craft beer, smash burgers & fries. IPAs, sours, stouts. ⚠️ Closed Mondays.",
+        hours: "Tu-W 4-10, Th-Sa 11-10, Su 11-9",
+        mapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJq1mlTKfJNoYR6k5vCYdgJdI",
+      },
+      {
+        id: "home",
+        name: "Home — 127 Oak Leaf TR",
+        tag: "🏠",
+        tagColor: "home",
+        emoji: "🏠",
+        desc: "~20 min from Seventh Tap. Arrive loaded with magnets, bourbon, chocolates & stories.",
+        hours: "",
+        mapsUrl: "",
+      },
+    ],
+  },
+];
+
+const TAG_COLORS = {
+  scenic: { bg: "#064e3b", color: "#6ee7b7" },
+  him: { bg: "#78350f", color: "#fbbf24" },
+  her: { bg: "#4a1d6a", color: "#c084fc" },
+  both: { bg: "#1e3a5f", color: "#7dd3fc" },
+  magnet: { bg: "#7f1d1d", color: "#fca5a5" },
+  food: { bg: "#713f12", color: "#fde68a" },
+  gift: { bg: "#365314", color: "#bef264" },
+  nature: { bg: "#064e3b", color: "#6ee7b7" },
+  brand: { bg: "#312e81", color: "#a5b4fc" },
+  home: { bg: "#374151", color: "#d1d5db" },
+};
+
+function StopCard({ stop, visited, onToggle }) {
+  const tagStyle = TAG_COLORS[stop.tagColor] || TAG_COLORS.both;
+  return (
+    <div
+      style={{
+        position: "relative",
+        padding: "14px 14px 14px 44px",
+        marginBottom: 2,
+        background: visited ? "#0c1f18" : "#111b27",
+        borderLeft: `3px solid ${visited ? "#22c55e" : "#1e3348"}`,
+        transition: "all 0.2s ease",
+        opacity: visited ? 0.7 : 1,
+      }}
+    >
+      <button
+        onClick={onToggle}
+        style={{
+          position: "absolute",
+          left: 10,
+          top: 16,
+          width: 24,
+          height: 24,
+          borderRadius: 6,
+          border: visited ? "2px solid #22c55e" : "2px solid #334155",
+          background: visited ? "#22c55e" : "transparent",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 14,
+          color: "#fff",
+          transition: "all 0.15s ease",
+          padding: 0,
+          flexShrink: 0,
+        }}
+      >
+        {visited ? "✓" : ""}
+      </button>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+        <span style={{ fontSize: 15, fontWeight: 700, color: visited ? "#6b8068" : "#e2e8f0", textDecoration: visited ? "line-through" : "none" }}>
+          {stop.emoji} {stop.name}
+        </span>
+        <span
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            padding: "2px 7px",
+            borderRadius: 4,
+            background: tagStyle.bg,
+            color: tagStyle.color,
+            whiteSpace: "nowrap",
+          }}
+        >
+          {stop.tag}
+        </span>
+      </div>
+
+      <div style={{ fontSize: 12, color: "#6b8599", marginTop: 4, lineHeight: 1.45 }}>{stop.desc}</div>
+
+      {stop.hours && (
+        <div style={{ fontSize: 11, color: "#4a6275", marginTop: 3 }}>🕐 {stop.hours}</div>
+      )}
+
+      {stop.mapsUrl && (
+        <a
+          href={stop.mapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "inline-block",
+            marginTop: 6,
+            fontSize: 12,
+            color: "#60a5fa",
+            textDecoration: "none",
+            padding: "4px 10px",
+            background: "#172032",
+            borderRadius: 6,
+          }}
+        >
+          📍 Open in Maps
+        </a>
+      )}
+    </div>
+  );
+}
+
+function LegSection({ leg, visited, onToggleStop }) {
+  const totalStops = leg.stops.filter((s) => s.mapsUrl).length;
+  const visitedCount = leg.stops.filter((s) => s.mapsUrl && visited[s.id]).length;
+  const progress = totalStops > 0 ? (visitedCount / totalStops) * 100 : 0;
+
+  return (
+    <div style={{ marginBottom: 32 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+        <div
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: "50%",
+            background: progress === 100 ? "#22c55e" : "#2563eb",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: 800,
+            fontSize: 14,
+            color: "#fff",
+            flexShrink: 0,
+          }}
+        >
+          {progress === 100 ? "✓" : leg.num}
+        </div>
+        <div>
+          <div style={{ fontSize: 17, fontWeight: 700, color: "#f1f5f9" }}>{leg.title}</div>
+          <div style={{ fontSize: 12, color: "#64748b" }}>{leg.meta}</div>
+        </div>
+      </div>
+
+      {/* progress bar */}
+      <div style={{ margin: "8px 0 10px 42px", height: 4, background: "#1e293b", borderRadius: 2, overflow: "hidden" }}>
+        <div
+          style={{
+            height: "100%",
+            width: `${progress}%`,
+            background: progress === 100 ? "#22c55e" : "#3b82f6",
+            borderRadius: 2,
+            transition: "width 0.4s ease",
+          }}
+        />
+      </div>
+      <div style={{ fontSize: 11, color: "#4a6275", marginLeft: 42, marginBottom: 10 }}>
+        {visitedCount}/{totalStops} stops visited
+      </div>
+
+      <a
+        href={leg.routeUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          display: "block",
+          background: "#1a73e8",
+          color: "#fff",
+          textDecoration: "none",
+          padding: "13px 16px",
+          borderRadius: 10,
+          fontSize: 15,
+          fontWeight: 700,
+          textAlign: "center",
+          marginBottom: 12,
+        }}
+      >
+        🧭 Open Full Route in Google Maps
+      </a>
+
+      <div style={{ borderRadius: 10, overflow: "hidden" }}>
+        {leg.stops.map((stop) => (
+          <StopCard key={stop.id} stop={stop} visited={!!visited[stop.id]} onToggle={() => onToggleStop(stop.id)} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function RoadTripTracker() {
+  const [visited, setVisited] = useState({});
+  const [loaded, setLoaded] = useState(false);
+
+  // Load from storage on mount
+  useEffect(() => {
+    async function load() {
+      try {
+        const result = await window.storage.get("road-trip-visited");
+        if (result && result.value) {
+          setVisited(JSON.parse(result.value));
+        }
+      } catch (e) {
+        // Key doesn't exist yet, that's fine
+      }
+      setLoaded(true);
+    }
+    load();
+  }, []);
+
+  // Save to storage on change
+  useEffect(() => {
+    if (!loaded) return;
+    async function save() {
+      try {
+        await window.storage.set("road-trip-visited", JSON.stringify(visited));
+      } catch (e) {
+        console.error("Failed to save:", e);
+      }
+    }
+    save();
+  }, [visited, loaded]);
+
+  const toggleStop = (stopId) => {
+    setVisited((prev) => {
+      const next = { ...prev };
+      if (next[stopId]) {
+        delete next[stopId];
+      } else {
+        next[stopId] = Date.now();
+      }
+      return next;
+    });
+  };
+
+  const totalStops = LEGS.flatMap((l) => l.stops).filter((s) => s.mapsUrl).length;
+  const totalVisited = LEGS.flatMap((l) => l.stops).filter((s) => s.mapsUrl && visited[s.id]).length;
+  const overallProgress = totalStops > 0 ? Math.round((totalVisited / totalStops) * 100) : 0;
+
+  const resetAll = () => {
+    if (confirm("Reset all progress? This can't be undone.")) {
+      setVisited({});
+    }
+  };
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#0a1120",
+        color: "#e2e8f0",
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
+      }}
+    >
+      <div style={{ maxWidth: 480, margin: "0 auto", padding: "20px 16px 40px" }}>
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <div style={{ fontSize: 32, marginBottom: 4 }}>🗺️</div>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: "#f8fafc", margin: 0 }}>
+            Mena → OK → TX → Benton
+          </h1>
+          <div style={{ fontSize: 13, color: "#64748b", marginTop: 4 }}>
+            3 states · ~4.5 hrs driving · {totalStops} stops
+          </div>
+
+          {/* Overall progress */}
+          <div
+            style={{
+              marginTop: 16,
+              padding: "12px 16px",
+              background: "#111b27",
+              borderRadius: 12,
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
+            <div
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: "50%",
+                background: `conic-gradient(${overallProgress === 100 ? "#22c55e" : "#3b82f6"} ${overallProgress}%, #1e293b ${overallProgress}%)`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <div
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: "50%",
+                  background: "#111b27",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 13,
+                  fontWeight: 800,
+                  color: overallProgress === 100 ? "#22c55e" : "#93c5fd",
+                }}
+              >
+                {overallProgress}%
+              </div>
+            </div>
+            <div style={{ textAlign: "left" }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#f1f5f9" }}>
+                {overallProgress === 100 ? "🎉 Trip Complete!" : "Trip Progress"}
+              </div>
+              <div style={{ fontSize: 12, color: "#64748b" }}>
+                {totalVisited} of {totalStops} stops visited
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Checklist */}
+        <div
+          style={{
+            background: "#111b27",
+            borderRadius: 10,
+            padding: "12px 14px",
+            marginBottom: 24,
+            fontSize: 13,
+            lineHeight: 1.8,
+            color: "#8899aa",
+          }}
+        >
+          <div style={{ fontWeight: 700, color: "#cbd5e1", marginBottom: 4 }}>🎯 Don't Forget</div>
+          <div>🧲 OK magnet → Janet's Treasure Chest</div>
+          <div>🧲 TX magnet → Texas Treasures, Jefferson</div>
+          <div>🥃 Bourbon → Hochatown Distilling (book ahead!)</div>
+          <div>👕 OK brand → Hochatime tees & hoodies</div>
+          <div>📷 Best photos → Caddo Lake, Spillway, Cossatot Falls</div>
+          <div>🎁 Parents → Foodie Tasting Room, Jefferson</div>
+        </div>
+
+        {/* Closures warning */}
+        <div
+          style={{
+            background: "#1c1208",
+            border: "1px solid #854d0e33",
+            borderRadius: 10,
+            padding: "10px 14px",
+            marginBottom: 24,
+            fontSize: 12,
+            color: "#ca8a04",
+            lineHeight: 1.7,
+          }}
+        >
+          <strong>⚠️ Day-of-week closures</strong>
+          <br />
+          Mon: Auntie Skinner's, Yesteryear, Foodie Tasting, Seventh Tap
+          <br />
+          Tue: Auntie Skinner's, Foodie Tasting, Forest Store, Seventh Tap
+          <br />
+          Sun: GG's, Olde 1852 Market
+        </div>
+
+        {/* Legs */}
+        {LEGS.map((leg) => (
+          <LegSection key={leg.id} leg={leg} visited={visited} onToggleStop={toggleStop} />
+        ))}
+
+        {/* Reset */}
+        <div style={{ textAlign: "center", marginTop: 16 }}>
+          <button
+            onClick={resetAll}
+            style={{
+              background: "transparent",
+              border: "1px solid #1e293b",
+              color: "#475569",
+              fontSize: 12,
+              padding: "8px 20px",
+              borderRadius: 8,
+              cursor: "pointer",
+            }}
+          >
+            Reset All Progress
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
